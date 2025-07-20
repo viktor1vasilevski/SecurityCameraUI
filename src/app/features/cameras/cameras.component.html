@@ -1,0 +1,22 @@
+<!-- camera-table.component.html -->
+<div class="container mt-4">
+  <h3>Cameras</h3>
+  <table class="table table-bordered table-striped table-hover">
+    <thead class="table-dark">
+      <tr>
+        <th>Number</th>
+        <th>Name</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cam of cameras">
+        <td>{{ cam.number }}</td>
+        <td>{{ cam.name }}</td>
+        <td>{{ cam.latitude ?? "N/A" }}</td>
+        <td>{{ cam.longitude ?? "N/A" }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
