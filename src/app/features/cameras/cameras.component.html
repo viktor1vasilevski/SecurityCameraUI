@@ -1,22 +1,37 @@
-<!-- camera-table.component.html -->
-<div class="container mt-4">
-  <h3>Cameras</h3>
-  <table class="table table-bordered table-striped table-hover">
-    <thead class="table-dark">
-      <tr>
-        <th>Number</th>
-        <th>Name</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let cam of cameras">
-        <td>{{ cam.number }}</td>
-        <td>{{ cam.name }}</td>
-        <td>{{ cam.latitude ?? "N/A" }}</td>
-        <td>{{ cam.longitude ?? "N/A" }}</td>
-      </tr>
-    </tbody>
-  </table>
+<h1>Security cameras Utrecht</h1>
+
+<app-map [cameras]="cameras"></app-map>
+
+<div id="source">
+  source:
+  <a href="https://data.overheid.nl/dataset/camera-s"
+    >https://data.overheid.nl/dataset/camera-s</a
+  >
+</div>
+
+<div class="row">
+  <div class="col-md-3">
+    <app-camera-table
+      [cameras]="camerasByColumn.divisibleBy3"
+      title="Divisible by 3"
+    ></app-camera-table>
+  </div>
+  <div class="col-md-3">
+    <app-camera-table
+      [cameras]="camerasByColumn.divisibleBy5"
+      title="Divisible by 5"
+    ></app-camera-table>
+  </div>
+  <div class="col-md-3">
+    <app-camera-table
+      [cameras]="camerasByColumn.divisibleBy3And5"
+      title="Divisible by 3 and 5"
+    ></app-camera-table>
+  </div>
+  <div class="col-md-3">
+    <app-camera-table
+      [cameras]="camerasByColumn.notDivisible"
+      title="Not Divisible"
+    ></app-camera-table>
+  </div>
 </div>
