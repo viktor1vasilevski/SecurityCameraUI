@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService, ActiveToast, IndividualConfig } from 'ngx-toastr';
+import { NotificationType } from '../enums/notification-type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -7,43 +8,42 @@ import { ToastrService } from 'ngx-toastr';
 export class NotificationService {
   constructor(private toastr: ToastrService) {}
 
-  success(
-    message: string | null,
-    title: string = 'Success',
-    options: any = {}
+  private showToast(
+    method: 'success' | 'error',
+    title: string,
+    message: string | null | undefined,
+    options: Partial<IndividualConfig> = {}
+  ): ActiveToast<any> | void {
+    if (message === null) return;
+
+    return this.toastr[method](message, title, {
+      timeOut: 4500,
+      positionClass: 'toast-bottom-right',
+      ...options,
+    });
+  }
+
+  private success(message: string | null | undefined, options = {}) {
+    return this.showToast('success', 'Success', message, options);
+  }
+
+  private error(message: string | null | undefined, options = {}) {
+    return this.showToast('error', 'Error', message, options);
+  }
+
+  notify(
+    type: NotificationType,
+    message: string | null | undefined,
+    options?: Partial<IndividualConfig>
   ) {
-    if (message !== null) {
-      this.toastr.success(message, title, {
-        timeOut: 4500,
-        positionClass: 'toast-bottom-right',
-        ...options,
-      });
+    switch (type) {
+      case NotificationType.Success:
+        return this.success(message, options);
+      case NotificationType.ServerError:
+        return this.error(message, options);
+      default:
+        console.warn('Unknown notification type:', type);
+        return;
     }
-  }
-
-  info(message: string | null, title: string = 'Info', options: any = {}) {
-    if (message !== null) {
-      this.toastr.info(message, title, {
-        timeOut: 4500,
-        positionClass: 'toast-bottom-right',
-        ...options,
-      });
-    }
-  }
-
-  warning(message: string, title: string = 'Warning', options: any = {}) {
-    this.toastr.warning(message, title, {
-      timeOut: 4500,
-      positionClass: 'toast-bottom-right',
-      ...options,
-    });
-  }
-
-  error(message: string, title: string = 'Error', options: any = {}) {
-    this.toastr.error(message, title, {
-      timeOut: 4500,
-      positionClass: 'toast-bottom-right',
-      ...options,
-    });
   }
 }
