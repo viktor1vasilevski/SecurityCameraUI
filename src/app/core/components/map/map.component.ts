@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
 } from '@angular/core';
 import * as L from 'leaflet';
@@ -13,7 +14,7 @@ import * as L from 'leaflet';
   templateUrl: './map.component.html',
   styleUrl: './map.component.css',
 })
-export class MapComponent implements AfterViewInit, OnChanges {
+export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() cameras: any[] = [];
 
   private map!: L.Map;
@@ -30,7 +31,15 @@ export class MapComponent implements AfterViewInit, OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+      this.map = undefined as any;
+    }
+  }
+
   private initMap(): void {
+    if (this.map) return;
     this.map = L.map('map').setView([52.0914, 5.1115], 13);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
