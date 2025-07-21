@@ -1,14 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DebugElement, OnInit } from '@angular/core';
 import { CameraService } from '../../core/services/camera.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
 import { CameraTableComponent } from '../../core/components/camera-table/camera-table.component';
 import { MapComponent } from '../../core/components/map/map.component';
-
-export interface CameraRequest {
-  name: string;
-}
+import { CameraRequest } from '../cameras/models/camera-request.model';
+import { ApiResponse } from '../../core/models/api-response';
+import { CameraDTO } from './models/camera-dto.model';
 
 @Component({
   selector: 'app-cameras',
@@ -17,7 +16,7 @@ export interface CameraRequest {
   styleUrl: './cameras.component.css',
 })
 export class CamerasComponent implements OnInit {
-  cameras: any[] = [];
+  cameras: CameraDTO[] = [];
 
   camerasByColumn = {
     divisibleBy3: [] as any[],
@@ -42,15 +41,18 @@ export class CamerasComponent implements OnInit {
 
   loadCameras() {
     this._cameraService.getCameras(this.cameraRequest).subscribe({
-      next: (response: any) => {
+      next: (response: ApiResponse<CameraDTO[]>) => {
         if (response && response.success && response.data) {
           this.cameras = response.data;
           this.categorizeCameras(response.data);
         } else {
-          this._notificationService.error(response.message);
+          this._notificationService.notify(
+            response.notificationType,
+            response.message
+          );
         }
       },
-      error: (errorResponse: any) => {
+      error: (errorResponse: ApiResponse<CameraDTO[]>) => {
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
@@ -69,16 +71,12 @@ export class CamerasComponent implements OnInit {
 
       if (number % 3 === 0 && number % 5 === 0) {
         this.camerasByColumn.divisibleBy3And5.push(cam);
-        //this.cameras.push(cam)
       } else if (number % 3 === 0) {
         this.camerasByColumn.divisibleBy3.push(cam);
-        //this.cameras.push(cam)
       } else if (number % 5 === 0) {
         this.camerasByColumn.divisibleBy5.push(cam);
-        //this.cameras.push(cam)
       } else {
         this.camerasByColumn.notDivisible.push(cam);
-        //this.cameras.push(cam)
       }
     }
   }
