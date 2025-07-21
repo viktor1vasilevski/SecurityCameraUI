@@ -56,11 +56,21 @@ export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
     this.cameras.forEach((cam) => {
       if (cam.latitude && cam.longitude) {
-        const marker = L.marker([cam.latitude, cam.longitude]).bindPopup(
-          `<b>${cam.name}</b><br>Number: ${cam.number}`
-        );
+        const marker = L.marker([cam.latitude, cam.longitude], {
+          icon: this.customIcon,
+        }).bindPopup(`<b>${cam.name}</b><br>Number: ${cam.number}`);
         this.markersLayer.addLayer(marker);
       }
     });
   }
+
+  private customIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'marker-shadow.png',
+    iconSize: [25, 41],
+    shadowSize: [41, 41],
+    iconAnchor: [12, 41],
+    shadowAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
 }
