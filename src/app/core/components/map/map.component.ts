@@ -7,6 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import * as L from 'leaflet';
+import { CameraDTO } from '../../../features/cameras/models/camera-dto.model';
 
 @Component({
   selector: 'app-map',
@@ -15,7 +16,7 @@ import * as L from 'leaflet';
   styleUrl: './map.component.css',
 })
 export class MapComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input() cameras: any[] = [];
+  @Input() cameras: CameraDTO[] = [];
 
   private map!: L.Map;
   private markersLayer = L.layerGroup();

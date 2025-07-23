@@ -1,13 +1,13 @@
-import { Component, DebugElement, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CameraService } from '../../core/services/camera.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ErrorHandlerService } from '../../core/services/error-handler.service';
 import { CommonModule } from '@angular/common';
 import { CameraTableComponent } from '../../core/components/camera-table/camera-table.component';
 import { MapComponent } from '../../core/components/map/map.component';
-import { CameraRequest } from '../cameras/models/camera-request.model';
 import { ApiResponse } from '../../core/models/api-response';
 import { CameraDTO } from './models/camera-dto.model';
+import { CameraGroupedDTO } from './models/camera-grouped-dto.model';
 
 @Component({
   selector: 'app-cameras',
@@ -18,15 +18,11 @@ import { CameraDTO } from './models/camera-dto.model';
 export class CamerasComponent implements OnInit {
   cameras: CameraDTO[] = [];
 
-  camerasByColumn = {
-    divisibleBy3: [] as any[],
-    divisibleBy5: [] as any[],
-    divisibleBy3And5: [] as any[],
-    notDivisible: [] as any[],
-  };
-
-  cameraRequest: CameraRequest = {
-    name: '',
+  camerasByColumn: CameraGroupedDTO = {
+    divisibleBy3: [],
+    divisibleBy5: [],
+    divisibleBy3And5: [],
+    notDivisible: [],
   };
 
   constructor(
@@ -36,15 +32,20 @@ export class CamerasComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadCameras();
+    this.loadGroupedCameras();
   }
 
-  loadCameras() {
-    this._cameraService.getCameras(this.cameraRequest).subscribe({
-      next: (response: ApiResponse<CameraDTO[]>) => {
+  loadGroupedCameras() {
+    this._cameraService.getGroupedCameras().subscribe({
+      next: (response: ApiResponse<CameraGroupedDTO>) => {
         if (response && response.success && response.data) {
-          this.cameras = response.data;
-          this.categorizeCameras(response.data);
+          this.camerasByColumn = response.data;
+          this.cameras = [
+            ...response.data.divisibleBy3,
+            ...response.data.divisibleBy5,
+            ...response.data.divisibleBy3And5,
+            ...response.data.notDivisible,
+          ];
         } else {
           this._notificationService.notify(
             response.notificationType,
@@ -52,32 +53,9 @@ export class CamerasComponent implements OnInit {
           );
         }
       },
-      error: (errorResponse: ApiResponse<CameraDTO[]>) => {
+      error: (errorResponse: ApiResponse<CameraGroupedDTO>) => {
         this._errorHandlerService.handleErrors(errorResponse);
       },
     });
-  }
-
-  categorizeCameras(data: any[]) {
-    this.camerasByColumn = {
-      divisibleBy3: [],
-      divisibleBy5: [],
-      divisibleBy3And5: [],
-      notDivisible: [],
-    };
-
-    for (const cam of data) {
-      const number = cam.number;
-
-      if (number % 3 === 0 && number % 5 === 0) {
-        this.camerasByColumn.divisibleBy3And5.push(cam);
-      } else if (number % 3 === 0) {
-        this.camerasByColumn.divisibleBy3.push(cam);
-      } else if (number % 5 === 0) {
-        this.camerasByColumn.divisibleBy5.push(cam);
-      } else {
-        this.camerasByColumn.notDivisible.push(cam);
-      }
-    }
   }
 }
