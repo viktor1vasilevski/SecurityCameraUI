@@ -1,59 +1,74 @@
 # CameraSearchAppUI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
+CameraSearchAppUI is an Angular application that visualizes and categorizes security cameras in Utrecht, Netherlands. It fetches camera data from a backend API and displays their locations on an interactive map, and organizes them into groups based on their camera number (divisible by 3, 5, both, or neither).
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Map Visualization:**
+  - Displays all camera locations on a map using Leaflet, with popups showing camera name and number.
+- **Camera Grouping:**
+  - Cameras are grouped into four categories:
+    - Divisible by 3
+    - Divisible by 5
+    - Divisible by both 3 and 5
+    - Not divisible by 3 or 5
+  - Each group is shown in its own table.
+- **Live Data:**
+  - Fetches camera data from a backend API endpoint (`/camera/grouped`), which returns grouped camera data.
+- **Notifications:**
+  - Uses toast notifications for success and error messages.
 
-```bash
-ng serve
+## Getting Started
+
+### Prerequisites
+- Node.js and npm installed
+- Angular CLI installed globally (`npm install -g @angular/cli`)
+
+### Installation
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Run the development server:**
+   ```bash
+   ng serve
+   ```
+   Open your browser at [http://localhost:4200](http://localhost:4200).
+
+
+## Project Structure
+- `src/app/features/cameras/` – Main feature module for camera display and grouping.
+- `src/app/core/components/map/` – Map component for visualizing camera locations.
+- `src/app/core/services/` – Services for API communication, error handling, and notifications.
+- `src/app/core/models/` – TypeScript interfaces for API responses and camera data.
+
+
+## API Contract
+The frontend expects the backend to provide a grouped camera endpoint at `/camera/grouped`, returning data in the following format:
+
+```ts
+interface CameraGroupedDTO {
+  divisibleBy3: CameraDTO[];
+  divisibleBy5: CameraDTO[];
+  divisibleBy3And5: CameraDTO[];
+  notDivisible: CameraDTO[];
+}
+
+interface CameraDTO {
+  number: number;
+  name: string;
+  latitude?: number;
+  longitude?: number;
+}
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Tech Stack
+- Angular 19
+- Leaflet (for maps)
+- Bootstrap (for styling)
+- ngx-toastr (for notifications)
+- TypeScript
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
