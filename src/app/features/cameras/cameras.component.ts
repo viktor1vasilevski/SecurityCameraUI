@@ -38,7 +38,7 @@ export class CamerasComponent implements OnInit {
   loadGroupedCameras() {
     this._cameraService.getGroupedCameras().subscribe({
       next: (response: ApiResponse<CameraGroupedDTO>) => {
-        if (response && response.success && response.data) {
+        if (response && response.data) {
           this.camerasByColumn = response.data;
           this.cameras = [
             ...response.data.divisibleBy3,
