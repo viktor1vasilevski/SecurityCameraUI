@@ -1,6 +1,6 @@
-# CameraSearchAppUI
+# SecurityCameraUI
 
-CameraSearchAppUI is an Angular application that visualizes and categorizes security cameras in Utrecht, Netherlands. It fetches camera data from a backend API and displays their locations on an interactive map, and organizes them into groups based on their camera number (divisible by 3, 5, both, or neither).
+SecurityCameraUI is an Angular application that visualizes and categorizes security cameras in Utrecht, Netherlands. It fetches camera data from a backend API and displays their locations on an interactive map, and organizes them into groups based on their camera number (divisible by 3, 5, both, or neither).
 
 ## Features
 
